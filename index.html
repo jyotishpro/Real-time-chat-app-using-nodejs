@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat application</title>
+    <style>
+        .container{
+            border: 2 px solid black; 
+            width: 400px;
+            min-height: fit-content;
+            padding: 40px;
+            border-radius: 10px;
+            background-color: red;
+        }
+        #form{
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+       .input{
+        width: 300px;
+            height: 40px;
+            font-size: 16px;
+            padding: 10px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+       .input:focus{
+        border-color: #66afe9; 
+       box-shadow: 0 0 8px #66afe9;
+       }
+       .input::placeholder{
+        color: #999;
+       font-style: italic;
+       }
+       .input:hover{
+        border-color: #888;
+       }
+        #btn{
+            background-color: #4CAF50;
+            border: none; 
+            color: white;  
+            padding: 15px 32px; 
+            text-align: center; 
+            text-decoration: none; 
+            display: inline-block; 
+            font-size: 16px; 
+            margin: 10px 2px; 
+            cursor: pointer;
+            border-radius: 5px; 
+            transition: background-color 0.3s ease;
+            width: 120px;
+            margin-left: 30%;
+        }
+        #btn:hover{
+         background-color: #45a049;
+        }
+        #btn:focus{
+            outline: none; 
+            box-shadow: 0 0 10px #66afe9; 
+        }
+        #btn:disabled{
+            background-color: #ddd; 
+            color: #666; 
+            cursor: not-allowed;
+        }
+        #showmessage{
+            background-color: white;
+            padding: 10px;
+            border-radius: 20px;
+
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form action="" id="form">
+
+            <input class="input" type="text" placeholder="Enter your name" id="name">
+            <input class="input" type="text" placeholder="Enter your message" id="message">
+            <button id="btn">Send</button>
+
+        </form>
+
+        <div id="showmessage">
+
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io();
+        const form = document.getElementById('form');
+        const name = document.getElementById('name');
+        const message= document.getElementById('message');
+        const showmessage= document.getElementById('showmessage');
+        const butt = document.getElementById("btn");
+        let btn = false;
+
+        form.addEventListener('submit',(e)=>{
+         e.preventDefault();
+         btn= btn?false:true;
+         let Username = name.value;
+         let Usermessage= message.value;
+         socket.emit('chat',Username,Usermessage);
+         name.value='';
+         message.value='';
+        
+        })
+
+        
+        
+        socket.on('Servername',(Servername)=>{
+            let p = document.createElement('p');
+            p.textContent=`Name is: ${Servername}`;
+            showmessage.appendChild(p)
+        })
+        
+        socket.on('Servermessage',(Servermessage)=>{
+            let div = document.createElement('div');
+            div.textContent=`Message is: ${Servermessage}`;
+            showmessage.appendChild(div)
+        })
+    
+        
+
+        
+
+    </script>
+</body>
+</html>
